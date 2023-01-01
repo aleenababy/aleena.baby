@@ -1,0 +1,42 @@
+HDF4 file reader for KOSMA-tau PDR Model
+This file contains:
+    hdf4_reader.py : python file to read and analyse hdf4 output
+    pdrout.hdf: a smaple hdf4 file
+This python routine uses the following packages:
+    1. numpy
+    2. matplotlib, seaborn # plotting
+    3. pyhdf, h5py  # reading hdf5 or hdf4 files
+    4. pandas
+
+A list of molecules are given. The first three (electron, H, and H_2) is almost
+same in all variation of the KOSMA-Tau code. You can use the CTRL.IND file provided
+with the hdf4 (if not provided then request:aleenababy839@gmail.com) to see the correct
+order of the molecules. Then replace that array with molecule array in the code.
+
+Function arrays will read the hdf4 file which is given as the input.
+The output will be three dataframes: df, df_hc_rates, df_photo_rates.
+df: an array containing all the properties of the cloud and individual species.
+    most of the names are self explanatory. However, 'cdd' is column density,
+    'abund' is the fractional abundance and 'depth' is the distance from the
+    surface of the cloud in parsec. If diffusion is part of the model run then
+    total, molecular, thermal, turbulent rates along with diffusion velocities are
+    given.
+df_hc_rates: heating and cooling rates 
+
+df_photo_rates: photoionsiation or photodissociation rates
+
+There is two sample functions defined to plot abundance of one species or
+all the species. 
+
+An exmple of how to use the results are shown below:
+
+    from hdf4_reader import *
+
+    hdf_file = 'path_to_the_hdf4_file'
+
+    df, df_hc_rates, df_photo_rates = arrays(hdf_file)
+
+    fig = plot_abundance_one(df, 'H')
+    plt.show()
+
+More details or comments: aleenababy839@gmail.com

@@ -1,0 +1,73 @@
+chemistry analyser for KOSMA-tau PDR Model
+This file contains:
+    read_chemical_rate_functions.py : python file to read and analyse chemchk.out, the chemistry file of KOSMA-Tau
+    chemchk.out: a smaple chemistry output file
+
+This python routine uses the following packages:
+    1. numpy
+    2. matplotlib, seaborn # plotting
+    3. pyhdf, h5py  # reading hdf5 or hdf4 files
+    4. pandas
+
+A list of molecules are given. The first three (electron, H, and H_2) is almost
+same in all variation of the KOSMA-Tau code. You can use the CTRL.IND file provided
+with the hdf4 (if not provided then request:aleenababy839@gmail.com) to see the correct
+order of the molecules. Then replace that array with molecule array in the code.
+
+Function arrays will read the hdf4 file which is given as the input.
+The output will be two dataframes: chem_form, chem_dest
+
+chem_form: denotes the formation reaction rates of individual species
+
+chem_dest: contains the destruction reaction rates of individual species
+
+In both dataframes, molecule, the spatial position in the model, reaction,
+rate of reaction, total destruction rate of that species at that spatial position, 
+and contribution of that particular reaction to the total destruction/ formation 
+reaction is given. 
+
+There is two sample functions defined to plot abundance of one species or
+all the species. 
+
+An exmple of how to use the results are shown below:
+
+    from read_chemical_rate_functions import *
+
+    chemistry_file = 'path_to_the_chemistry_file'
+
+    chem_form, chem_dest = arrays(chemistry_file)
+    species_name = 'H'
+    fig = destruction_species(species_name, chem_dest)
+    fig = formation_species(species_name, chem_form)
+the x axis of the plot would be position index from the code. It is not a spatial
+postion.
+If you want to plot the chemistry file with spatial position then you must get the
+corresponding hdf4/hdf5 file. The functions with tag '_withhdf' will plot it with
+hdf for you.
+
+for example, to plot the destruction rates of species 'H' using hdf
+    from read_chemical_rate_functions import *
+    from hdf4_reader import *
+
+    hdf_file = 'path_to_the_hdf4_file'
+
+    df, df_hc_rates, df_photo_rates = arrays(hdf_file)
+
+    chemistry_file = 'path_to_the_chemistry_file'
+
+    chem_form, chem_dest = arrays(chemistry_file)
+    species_name = 'H'
+    fig = destruction_species(species_name, chem_dest, hdf)
+    
+More details or comments: aleenababy839@gmail.com
+
+if the program prints "repeated entires in the chemchk file" then no need to panic.
+It is a sorting error in the chemchk file. Just ignore it. It will not change your
+final result except the wiggles in the graph. I am working on correcting it.
+
+If the program prints 'formation/destruction of this species does not exist' then
+please do not panic or wonder you wrote the correct name. Just choose the name from
+the lsit printed. Sometimes even if the molecule exist it does not mean that both 
+formation and destruction of the molecule exist. One reaction is enough for a molecule
+to be included in the chemical reaction network.
+
